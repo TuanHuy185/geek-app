@@ -123,7 +123,7 @@ export default function AlbumDetail() {
   return (
     <Layout>
       {/* Section Header */}
-      <div className="flex flex-col gap-1 mb-3 mx-6">
+      <div className="flex flex-col gap-1 mb-5 mx-6">
         <div className="flex items-center gap-2">
           <TiDocumentText className="w-4 h-4" />
           <button
@@ -145,7 +145,7 @@ export default function AlbumDetail() {
           <h1 className="text-xl font-semibold text-gray-800">Show Album</h1>
         </div>
       </div>
-      <div className="p-6 mx-6 max-w-[1400px] bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div className="p-6 mx-6 mb-6 max-w-[1400px] bg-white border border-gray-200 rounded-lg shadow-sm">
         <div className="border border-gray-200 rounded-md p-5">
           <div className="mb-6">
             <div className="flex items-center gap-4 mb-4 border-b border-gray-200 pb-5">
