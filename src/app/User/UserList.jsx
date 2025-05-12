@@ -77,7 +77,7 @@ export default function UserList() {
                 <td className="py-4 px-4 border-b">
                   <button 
                     onClick={() => navigate(`/users/${user.id}`)}
-                    className="px-2 py-0.5 text-gray-600 border border-gray-300 rounded-md hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
+                    className="px-2 py-0.5 border border-gray-300 rounded-md hover:text-blue-400 hover:border-blue-400 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
                     <HiEye className="w-4 h-4" />
                     Show
                   </button>

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
 import { useDocumentTitle } from '../../App'
-import { HiEye } from 'react-icons/hi'
+import { HiEye, HiChevronDown, HiSearch } from 'react-icons/hi'
 import { fetchAlbums } from '../../store/AlbumSlice'
 import { fetchUsers, getAvatarUrl } from '../../store/UserSlice'
 import LoadingFallback from '../../components/LoadingFallback'
@@ -52,7 +52,8 @@ export default function AlbumList() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [inputValue, setInputValue] = useState(pageSize.toString());
+  const [inputValue, setInputValue] = useState(`${pageSize} / page`);
+  const [prevInputValue, setPrevInputValue] = useState(`${pageSize} / page`);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -105,10 +106,17 @@ export default function AlbumList() {
 
   const handleInputKeyDown = (e) => {
     if (e.key === 'Enter') {
-      const value = parseInt(inputValue);
+      const match = inputValue.match(/^(\d+)/);
+      const value = match ? parseInt(match[1]) : parseInt(inputValue);
       if (!isNaN(value) && value > 0) {
         handlePageSizeChange(value);
+        const newValue = `${value} / page`;
+        setInputValue(newValue);
+        setPrevInputValue(newValue);
         setIsOpen(false);
+      } else {
+        // Invalid input, restore previous value
+        setInputValue(prevInputValue);
       }
     }
   };
@@ -172,7 +180,7 @@ export default function AlbumList() {
       </div>
       {/* Pagination Section */}
       <div className="px-6 pt-4 pb-10 flex items-center justify-end gap-4">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
@@ -221,7 +229,7 @@ export default function AlbumList() {
                   <button
                     key={index}
                     onClick={() => handlePageChange(item)}
-                    className={`min-w-[32px] px-3 py-1 text-sm rounded-lg ${
+                    className={`min-w-[32px] px-3 py-1.5 text-sm rounded-md ${
                       page === item 
                         ? 'bg-white text-blue-600 font-medium border border-blue-600' 
                         : 'text-gray-500 hover:bg-gray-200'
@@ -268,17 +276,33 @@ export default function AlbumList() {
                 onKeyDown={handleInputKeyDown}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (!isOpen) toggleDropdown();
+                  setInputValue('');
+                  toggleDropdown();
                 }}
-                className="w-24 outline-none border border-gray-300 rounded-lg px-2 py-1.5 text-sm transition-all duration-200 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 cursor-pointer"
-                placeholder="Page size"
+                onFocus={() => setInputValue('')}
+                onBlur={() => {
+                  // If empty or invalid when losing focus, restore previous value
+                  if (!inputValue.trim() || isNaN(parseInt(inputValue))) {
+                    setInputValue(prevInputValue);
+                  }
+                }}
+                className="w-28 outline-none border border-gray-300 rounded-lg px-2 py-1.5 text-sm transition-all duration-200 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 cursor-pointer pr-8"
+                placeholder="10 / page"
               />
-              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">/ page</span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleDropdown();
+                }}
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 p-1 text-gray-500 hover:text-blue-500 transition-colors duration-200"
+              >
+                {isOpen ? <HiSearch className="w-4 h-4" /> : <HiChevronDown className="w-4 h-4" />}
+              </button>
             </div>
             
             {(isOpen || isClosing) && (
               <div 
-                className={`absolute bottom-[120%] left-0 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-24 z-50 ${
+                className={`absolute bottom-[120%] left-0 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-28 z-50 ${
                   isClosing ? 'animate-fadeOut' : 'animate-fadeIn'
                 }`}
               >
@@ -288,7 +312,9 @@ export default function AlbumList() {
                     className="px-3 py-1.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors duration-150 hover:text-blue-600"
                     onClick={() => {
                       handlePageSizeChange(size);
-                      setInputValue(size.toString());
+                      const newValue = `${size} / page`;
+                      setInputValue(newValue);
+                      setPrevInputValue(newValue);
                       toggleDropdown();
                     }}
                   >
