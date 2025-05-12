@@ -81,7 +81,7 @@ export default function UserDetail() {
   return (
     <Layout>
       {/* Section Header */}
-      <div className="flex flex-col gap-1 mb-6 mx-6">
+      <div className="flex flex-col gap-1 mb-5 mx-6">
         <div className="flex items-center gap-2">
           <LiaAddressCard className="w-4 h-4" />
           <button
@@ -104,7 +104,7 @@ export default function UserDetail() {
         </div>
       </div>
 
-      <div className="p-5 mx-6 max-w-[1400px] bg-white rounded-lg shadow-sm">
+      <div className="p-6 mx-6 mb-6 max-w-[1400px] bg-white rounded-lg shadow-sm">
         {/* Section Content */}
         <div className=" mx-auto space-y-6 border border-gray-100 rounded-lg shadow-sm">
           {/* User Information Card */}
