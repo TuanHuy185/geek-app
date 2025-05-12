@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
@@ -7,6 +7,37 @@ import { HiEye } from 'react-icons/hi'
 import { fetchAlbums } from '../../store/AlbumSlice'
 import { fetchUsers, getAvatarUrl } from '../../store/UserSlice'
 import LoadingFallback from '../../components/LoadingFallback'
+
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out;
+  }
+  .animate-fadeOut {
+    animation: fadeOut 0.2s ease-out;
+  }
+`;
+document.head.appendChild(style);
 
 export default function AlbumList() {
   useDocumentTitle('Albums');
@@ -19,10 +50,28 @@ export default function AlbumList() {
   const { albums, loading } = useSelector(state => state.albums);
   const { users } = useSelector(state => state.users);
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [inputValue, setInputValue] = useState(pageSize.toString());
+  const dropdownRef = useRef(null);
+
   useEffect(() => {
     dispatch(fetchAlbums());
     dispatch(fetchUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        if (isOpen) {
+          toggleDropdown();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   const getUserInitials = (userId) => {
     const user = users.find(u => u.id === userId);
@@ -47,6 +96,26 @@ export default function AlbumList() {
 
   const handlePageSizeChange = (size) => {
     setSearchParams({ current: '1', pageSize: size.toString() });
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+  };
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      const value = parseInt(inputValue);
+      if (!isNaN(value) && value > 0) {
+        handlePageSizeChange(value);
+        setIsOpen(false);
+      }
+    }
+  };
+
+  const toggleDropdown = () => {
+    setIsClosing(false);
+    setIsOpen(prev => !prev);
   };
 
   if (loading) return (
@@ -190,16 +259,46 @@ export default function AlbumList() {
             &rsaquo;
           </button>
 
-          <select
-            value={pageSize}
-            onChange={(e) => handlePageSizeChange(e.target.value)}
-            className="ml-2 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-gray-600"
-          >
-            <option value="10">10 / page</option>
-            <option value="20">20 / page</option>
-            <option value="50">50 / page</option>
-            <option value="100">100 / page</option>
-          </select>
+          <div className="relative ml-2" ref={dropdownRef}>
+            <div className="relative">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={handleInputKeyDown}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isOpen) toggleDropdown();
+                }}
+                className="w-24 outline-none border border-gray-300 rounded-lg px-2 py-1.5 text-sm transition-all duration-200 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 cursor-pointer"
+                placeholder="Page size"
+              />
+              <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">/ page</span>
+            </div>
+            
+            {(isOpen || isClosing) && (
+              <div 
+                className={`absolute bottom-[120%] left-0 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-24 z-50 ${
+                  isClosing ? 'animate-fadeOut' : 'animate-fadeIn'
+                }`}
+              >
+                {[10, 20, 50, 100].map(size => (
+                  <div
+                    key={size}
+                    className="px-3 py-1.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors duration-150 hover:text-blue-600"
+                    onClick={() => {
+                      handlePageSizeChange(size);
+                      setInputValue(size.toString());
+                      toggleDropdown();
+                    }}
+                  >
+                    {size} / page
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </Layout>
