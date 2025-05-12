@@ -122,10 +122,8 @@ export default function AlbumList() {
             const currentGroup = Math.floor((page - 1) / groupSize);
             const startPage = currentGroup * groupSize + 1;
             
-            // Always add page 1
             if (startPage > 1) {
               pageNumbers.push(1);
-              // Add left ellipsis if not in first group
               if (startPage > 2) {
                 pageNumbers.push({
                   type: 'prev-ellipsis',
@@ -134,12 +132,10 @@ export default function AlbumList() {
               }
             }
             
-            // Add current group pages
             for (let i = 0; i < groupSize && (startPage + i) <= totalPages; i++) {
               pageNumbers.push(startPage + i);
             }
             
-            // Add last page if not included
             if (startPage + groupSize < totalPages) {
               if (startPage + groupSize < totalPages - 1) {
                 pageNumbers.push({

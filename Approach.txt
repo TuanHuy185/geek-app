@@ -1,0 +1,31 @@
+Technical Stack and Approach
+
+1. Frontend Framework
+- React 18: Latest version with improved rendering and concurrent features
+- Vite: Modern build tool for faster development and optimized production builds
+
+2. State Management
+- Redux Toolkit: For centralized state management
+
+3. Styling Solutions
+- Tailwind CSS: For utility-first styling
+- Styled Components: For component-specific styled elements
+- CSS Modules: For scoped styling
+
+4. UI/UX Enhancements
+- React Icons: For comprehensive icon library
+- Lucide React: For consistent and customizable icons
+
+5. Functionality and Features
+- React Router DOM: For client-side routing
+- React Toastify: For toast notifications
+
+8. Development Tools
+- ESLint: For code quality and consistency
+- Postcss & Autoprefixer: For CSS processing and browser compatibility
+
+Architecture Decisions:
+1. Used Redux for global state (users, albums) while keeping Context API for simpler app-wide state
+2. Implemented code-splitting through React.lazy() (implied by the setup)
+3. Utilized Vite's module aliasing for cleaner imports
+5. Implemented strict mode for better development practices
