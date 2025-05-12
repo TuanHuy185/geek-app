@@ -1,6 +1,6 @@
 # Geek App
 
-A modern React application built with Vite
+A modern React application for viewing users, albums, and photos, built with Vite and Redux.
 
 ## Prerequisites
 
@@ -23,7 +23,7 @@ yarn
 ```
 
 3. Environment Setup
-Create a `.env` file in the root directory with the following variables:
+The app uses these environment variables (already configured in .env):
 ```properties
 VITE_REACT_APP_API_URL=https://jsonplaceholder.typicode.com
 VITE_TODOS_API=/todos
@@ -41,6 +41,15 @@ yarn dev
 
 The application will be available at `http://localhost:5173`
 
+## Features
+
+- **User Management**: View user list and individual user details
+- **Album Management**: Browse albums with pagination
+- **Photo Gallery**: View album photos with interactive image viewer
+- **Responsive Design**: Mobile and desktop friendly layout
+- **State Persistence**: Using Redux Persist for maintaining state between sessions
+- **Error Handling**: Graceful error boundaries
+
 ## Available Scripts
 
 - `npm run dev` - Start development server
@@ -50,32 +59,36 @@ The application will be available at `http://localhost:5173`
 
 ## Tech Stack
 
-- React 18
-- Vite
-- Redux Toolkit
-- React Router DOM
-- Styled Components
-- Tailwind CSS
+- **Frontend Framework**: React 18
+- **Build Tool**: Vite
+- **State Management**: Redux Toolkit with Redux Persist
+- **Routing**: React Router DOM (HashRouter)
+- **Styling**: Tailwind CSS
+- **UI Components**: React Icons, Lucide React
+- **Additional Libraries**: React Toastify
 
 ## Project Structure
 
 ```
 geek-app/
 ├── src/
-├── public/
-├── .env
-├── package.json
-├── vite.config.js
-└── tailwind.config.js
+│   ├── app/               # Feature-based components
+│   │   ├── Album/         # Album feature components
+│   │   └── User/          # User feature components
+│   ├── assets/            # Static assets
+│   ├── components/        # Reusable UI components
+│   │   ├── header/        # Header components
+│   │   ├── layout/        # Layout components
+│   │   └── slidebar/      # Sidebar components
+│   ├── context/           # React context
+│   ├── store/             # Redux store
+│   │   ├── UserSlice.jsx  # User-related state
+│   │   └── AlbumSlice.jsx # Album-related state
+│   └── styles/            # Global styles
+├── .env                   # Environment variables
+├── vite.config.js         # Vite configuration
+└── tailwind.config.js     # Tailwind CSS configuration
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
