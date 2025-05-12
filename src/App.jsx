@@ -13,6 +13,7 @@ import UserDetail from "./app/User/UserDetail";
 import AlbumList from "./app/Album/AlbumList";
 import AlbumDetail from "./app/Album/AlbumDetail";
 import { AppProvider } from './context/AppContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export const useDocumentTitle = (title) => {
   React.useEffect(() => {
@@ -24,35 +25,37 @@ export default function App() {
   return (
     <AppProvider>
       <Router>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Default route */}
-            <Route 
-              path="/" 
-              element={<Navigate to="/albums?pageSize=20&current=1" replace />} 
-            />
-            
-            {/* User routes */}
-            <Route path="/users" element={<UserList />} />
-            <Route path="/users/:id" element={<UserDetail />} />
-            
-            {/* Album routes - Sửa lại thứ tự và loại bỏ route redirect trùng lặp */}
-            <Route path="/albums" element={<AlbumList />} />
-            <Route path="/albums/:id" element={<AlbumDetail />} />
-            
-            {/* Catch all */}
-            <Route 
-              path="*" 
-              element={<Navigate to="/albums?pageSize=20&current=1" replace />} 
-            />
-          </Routes>
-        </Suspense>
-        <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          theme="colored"
-          className="toast-container"
-        />
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              {/* Default route */}
+              <Route 
+                path="/" 
+                element={<Navigate to="/albums?pageSize=20&current=1" replace />} 
+              />
+              
+              {/* User routes */}
+              <Route path="/users" element={<UserList />} />
+              <Route path="/users/:id" element={<UserDetail />} />
+              
+              {/* Album routes */}
+              <Route path="/albums" element={<AlbumList />} />
+              <Route path="/albums/:id" element={<AlbumDetail />} />
+              
+              {/* Catch all */}
+              <Route 
+                path="*" 
+                element={<Navigate to="/albums?pageSize=20&current=1" replace />} 
+              />
+            </Routes>
+          </Suspense>
+          <ToastContainer
+            position="top-right"
+            autoClose={1000}
+            theme="colored"
+            className="toast-container"
+          />
+        </ErrorBoundary>
       </Router>
     </AppProvider>
   );

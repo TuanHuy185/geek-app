@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../components/layout/Layout";
@@ -15,18 +15,38 @@ export default function UserDetail() {
   const dispatch = useDispatch();
   const { users, todos, loading } = useSelector((state) => state.users);
   const { albums } = useSelector((state) => state.albums);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const userId = parseInt(id);
 
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchUsers());
-      dispatch(fetchAlbums());
-    }
-  }, [dispatch, id]);
-
-  const user = users.find((u) => u.id === parseInt(id));
   useDocumentTitle(`#${id} Show User`);
 
-  if (loading || !user) {
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Check if we already have the specific user and related albums
+        const hasUser = users.some(u => u.id === userId);
+        const hasAlbums = albums.some(a => a.userId === userId);
+        
+        const promises = [];
+        if (!hasUser) promises.push(dispatch(fetchUsers()));
+        if (!hasAlbums) promises.push(dispatch(fetchAlbums()));
+        
+        if (promises.length > 0) {
+          await Promise.all(promises);
+        }
+        
+        setIsDataLoaded(true);
+      } catch (error) {
+        console.error("Failed to load user data:", error);
+      }
+    };
+    
+    loadData();
+  }, [dispatch, userId, users, albums]);
+
+  const user = users.find((u) => u.id === userId);
+
+  if (loading || !isDataLoaded) {
     return (
       <Layout>
         <LoadingFallback message="Loading user details..." />
@@ -34,7 +54,25 @@ export default function UserDetail() {
     );
   }
 
-  const userAlbums = albums.filter((album) => album.userId === parseInt(id));
+  // If data is loaded but user is not found, show error
+  if (!user) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center p-10">
+          <h2 className="text-2xl font-bold text-red-500">User Not Found</h2>
+          <p className="text-gray-600 mb-4">The user you're looking for doesn't exist or has been removed.</p>
+          <button 
+            onClick={() => navigate('/users')}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Back to Users
+          </button>
+        </div>
+      </Layout>
+    );
+  }
+
+  const userAlbums = albums.filter((album) => album.userId === userId);
 
   const handleBack = () => {
     navigate(-1);

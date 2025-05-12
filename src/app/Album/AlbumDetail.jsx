@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { HiArrowLeft } from "react-icons/hi";
@@ -18,23 +18,42 @@ export default function AlbumDetail() {
   const { photos, albums, loading } = useSelector((state) => state.albums);
   const { users } = useSelector((state) => state.users);
 
-  const [viewerOpen, setViewerOpen] = React.useState(false);
-  const [currentPhotoIndex, setCurrentPhotoIndex] = React.useState(0);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const albumId = parseInt(id);
+
+  useDocumentTitle(`#${albumId} Show Album`);
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchAlbums());
-      dispatch(fetchPhotos());
-      dispatch(fetchUsers());
-    }
-  }, [dispatch, id]);
+    const loadData = async () => {
+      try {
+        // Check if we already have the specific album and photos
+        const hasAlbum = albums.some(a => a.id === albumId);
+        const hasPhotos = photos.some(p => p.albumId === albumId);
+        const hasUsers = users.length > 0;
+        
+        const promises = [];
+        if (!hasAlbum) promises.push(dispatch(fetchAlbums()));
+        if (!hasPhotos) promises.push(dispatch(fetchPhotos()));
+        if (!hasUsers) promises.push(dispatch(fetchUsers()));
+        
+        if (promises.length > 0) {
+          await Promise.all(promises);
+        }
+        
+        setIsDataLoaded(true);
+      } catch (error) {
+        console.error("Failed to load album data:", error);
+      }
+    };
+    
+    loadData();
+  }, [dispatch, albumId, albums, photos, users]);
 
-  const album = albums.find((a) => a.id === parseInt(id));
-  const albumPhotos = photos.filter((p) => p.albumId === parseInt(id));
+  const album = albums.find((a) => a.id === albumId);
+  const albumPhotos = photos.filter((p) => p.albumId === albumId);
   const user = users.find((u) => album && u.id === album.userId);
-
-  const albumId = album?.id || id;
-  useDocumentTitle(`#${albumId} Show Album`);
 
   const handleBack = () => {
     navigate(-1); 
@@ -57,10 +76,46 @@ export default function AlbumDetail() {
     );
   };
 
-  if (loading || !album || !user) {
+  // Show loading state if data is not yet loaded or loading flag is true
+  if (loading || !isDataLoaded) {
     return (
       <Layout>
         <LoadingFallback message="Loading album details..." />
+      </Layout>
+    );
+  }
+
+  // If data is loaded but album or user is not found, show error
+  if (!album) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center p-10">
+          <h2 className="text-2xl font-bold text-red-500">Album Not Found</h2>
+          <p className="text-gray-600 mb-4">The album you're looking for doesn't exist or has been removed.</p>
+          <button 
+            onClick={() => navigate('/albums')}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Back to Albums
+          </button>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center p-10">
+          <h2 className="text-2xl font-bold text-red-500">User Not Found</h2>
+          <p className="text-gray-600 mb-4">The user associated with this album doesn't exist or has been removed.</p>
+          <button 
+            onClick={() => navigate('/albums')}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          >
+            Back to Albums
+          </button>
+        </div>
       </Layout>
     );
   }
