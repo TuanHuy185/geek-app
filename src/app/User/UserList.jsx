@@ -14,14 +14,16 @@ export default function UserList() {
   const { users, loading, error } = useSelector(state => state.users);
 
   useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
+    if (!users.length) {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, users.length]);
 
   const getInitials = (name) => {
     return name.split(' ').map(n => n[0]).join('');
   };
 
-  if (loading) return <Layout><LoadingFallback message="Loading users..." /></Layout>;
+  if (loading || !users.length) return <Layout><LoadingFallback message="Loading users..." /></Layout>;
   if (error) return <Layout><LoadingFallback message={`Error: ${error}`} size="small" /></Layout>;
 
   return (
@@ -57,25 +59,25 @@ export default function UserList() {
                   {user.name}
                 </td>
                 <td className="py-4 px-4 border-b">
-                  <a href={`mailto:${user.email}`} className="text-blue-600 hover:text-blue-400 transition-colors duration-150">
+                  <a href={`mailto:${user.email}`} className="text-blue-500 hover:text-blue-400 transition-colors">
                     {user.email}
                   </a>
                 </td>
                 <td className="py-4 px-4 border-b">
-                  <a href={`tel:${user.phone}`} className="text-blue-600 hover:text-blue-400 transition-colors duration-150">
+                  <a href={`tel:${user.phone}`} className="text-blue-500 hover:text-blue-400 transition-colors">
                     {user.phone}
                   </a>
                 </td>
                 <td className="py-4 px-4 border-b">
                   <a href={`https://${user.website}`} target="_blank" rel="noopener noreferrer" 
-                     className="text-blue-600 hover:text-blue-400 transition-colors duration-150">
+                     className="text-blue-500 hover:text-blue-400 transition-colors">
                     {user.website}
                   </a>
                 </td>
                 <td className="py-4 px-4 border-b">
                   <button 
                     onClick={() => navigate(`/users/${user.id}`)}
-                    className="px-2 py-0.5 text-gray-600  border border-gray-300 rounded-md hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
+                    className="px-2 py-0.5 text-gray-600 border border-gray-300 rounded-md hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
                     <HiEye className="w-4 h-4" />
                     Show
                   </button>

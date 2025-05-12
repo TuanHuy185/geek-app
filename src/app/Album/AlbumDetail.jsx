@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { HiArrowLeft } from "react-icons/hi";
 import { TiDocumentText } from "react-icons/ti";
+import { HiEye } from "react-icons/hi";
 import Layout from "../../components/layout/Layout";
 import LoadingFallback from "../../components/LoadingFallback";
 import { useDocumentTitle } from "../../App";
-import { fetchPhotos } from "../../store/AlbumSlice";
-import { fetchUsers } from "../../store/UserSlice";
+import { fetchPhotos, fetchAlbums } from "../../store/AlbumSlice";
+import { fetchUsers, getAvatarUrl } from "../../store/UserSlice";
+import ImageViewer from "../../components/ImageViewer";
 
 export default function AlbumDetail() {
   const { id } = useParams();
@@ -16,10 +18,16 @@ export default function AlbumDetail() {
   const { photos, albums, loading } = useSelector((state) => state.albums);
   const { users } = useSelector((state) => state.users);
 
+  const [viewerOpen, setViewerOpen] = React.useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = React.useState(0);
+
   useEffect(() => {
-    dispatch(fetchPhotos());
-    dispatch(fetchUsers());
-  }, [dispatch]);
+    if (id) {
+      dispatch(fetchAlbums());
+      dispatch(fetchPhotos());
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, id]);
 
   const album = albums.find((a) => a.id === parseInt(id));
   const albumPhotos = photos.filter((p) => p.albumId === parseInt(id));
@@ -32,17 +40,35 @@ export default function AlbumDetail() {
     navigate(-1); 
   };
 
-  if (loading)
+  const handlePhotoClick = (index) => {
+    setCurrentPhotoIndex(index);
+    setViewerOpen(true);
+  };
+
+  const handleNext = () => {
+    setCurrentPhotoIndex((prev) => 
+      prev === albumPhotos.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const handlePrev = () => {
+    setCurrentPhotoIndex((prev) => 
+      prev === 0 ? albumPhotos.length - 1 : prev - 1
+    );
+  };
+
+  if (loading || !album || !user) {
     return (
       <Layout>
-        <LoadingFallback message="Loading album photos..." />
+        <LoadingFallback message="Loading album details..." />
       </Layout>
     );
+  }
 
   return (
     <Layout>
       {/* Section Header */}
-      <div className="flex flex-col gap-1 mb-6">
+      <div className="flex flex-col gap-1 mb-3 mx-6">
         <div className="flex items-center gap-2">
           <TiDocumentText className="w-4 h-4" />
           <button
@@ -64,28 +90,27 @@ export default function AlbumDetail() {
           <h1 className="text-xl font-semibold text-gray-800">Show Album</h1>
         </div>
       </div>
-      <div className="p-5 max-w-[1400px] mx-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+      <div className="p-6 mx-6 max-w-[1400px] bg-white border border-gray-200 rounded-lg shadow-sm">
         <div className="border border-gray-200 rounded-md p-5">
           <div className="mb-6">
             <div className="flex items-center gap-4 mb-4 border-b border-gray-200 pb-5">
               {user && (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-pink-500 text-white flex items-center justify-center text-lg">
-                    {user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </div>
+                <div className="flex items-star gap-3">
+                  <img 
+                    src={getAvatarUrl(user.name, { size: 32 })}
+                    alt={`${user.name}'s avatar`}
+                    className="w-8 h-8 rounded-full"
+                  />
                   <div className="flex flex-col gap-2">
                     <h2
-                      className="font-bold text-sm cursor-pointer text-blue-500 hover:text-blue-400"
+                      className="text-blue-500 hover:text-blue-400 font-bold transition-colors cursor-pointer"
                       onClick={() => navigate(`/users/${user.id}`)}
                     >
                       {user.name}
                     </h2>
                     <a
                       href={`mailto:${user.email}`}
-                      className="text-blue-500 hover:text-blue-400 cursor-pointer"
+                      className="text-blue-500 hover:text-blue-400 transition-colors cursor-pointer"
                     >
                       {user.email}
                     </a>
@@ -97,30 +122,28 @@ export default function AlbumDetail() {
           </div>
 
           {/* Photo Gallery Section */}
-          <div className="overflow-x-auto py-4">
+          <div className="overflow-x-auto pb-4">
             <div className="flex flex-wrap gap-4">
-              {albumPhotos.map((photo) => (
+              {albumPhotos.map((photo, index) => (
                 <div
                   key={photo.id}
-                  className="group relative flex-none w-[150px]"
+                  className="group relative flex-none w-[150px] cursor-pointer"
+                  onClick={() => handlePhotoClick(index)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handlePhotoClick(index)}
+                  aria-label={`Preview ${photo.title}`}
                 >
                   <img
                     src={photo.thumbnailUrl}
                     alt={photo.title}
-                    className="w-[180px] h-[80px] object-cover rounded-lg shadow-sm group-hover:opacity-75 transition-opacity duration-200"
+                    className="w-[180px] h-[80px] object-cover rounded-lg shadow-sm group-hover:opacity-50 transition-opacity duration-200"
                   />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black bg-opacity-40 rounded-lg p-3">
-                    <p className="text-white text-center mb-3 text-xs line-clamp-2">
-                      {photo.title}
-                    </p>
-                    <a
-                      href={photo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-white px-3 py-1.5 rounded text-sm text-gray-700 hover:bg-opacity-90 transition-all duration-200"
-                    >
-                      View Full Size
-                    </a>
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50">
+                    <div className="flex items-center gap-2">
+                      <HiEye className="w-[18px] h-[18px] text-white/80" />
+                      <span className="text-white/80 text-[13px]">Preview</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -128,6 +151,16 @@ export default function AlbumDetail() {
           </div>
         </div>
       </div>
+
+      <ImageViewer
+        isOpen={viewerOpen}
+        onClose={() => setViewerOpen(false)}
+        currentImage={albumPhotos[currentPhotoIndex]?.url}
+        onNext={handleNext}
+        onPrev={handlePrev}
+        totalImages={albumPhotos.length}
+        currentIndex={currentPhotoIndex}
+      />
     </Layout>
   );
 }

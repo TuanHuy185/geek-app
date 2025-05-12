@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../components/layout/Layout";
 import { useDocumentTitle } from "../../App";
 import { fetchUsers, getAvatarUrl } from "../../store/UserSlice";
+import { fetchAlbums } from "../../store/AlbumSlice";
 import { HiMail, HiEye, HiArrowLeft } from "react-icons/hi";
 import { LiaAddressCard } from "react-icons/lia";
 import LoadingFallback from "../../components/LoadingFallback";
@@ -16,26 +17,22 @@ export default function UserDetail() {
   const { albums } = useSelector((state) => state.albums);
 
   useEffect(() => {
-    if (users.length === 0) {
+    if (id) {
       dispatch(fetchUsers());
+      dispatch(fetchAlbums());
     }
-  }, [dispatch, users.length]);
+  }, [dispatch, id]);
 
-  if (loading)
+  const user = users.find((u) => u.id === parseInt(id));
+  useDocumentTitle(`#${id} Show User`);
+
+  if (loading || !user) {
     return (
       <Layout>
         <LoadingFallback message="Loading user details..." />
       </Layout>
     );
-
-  const user = users.find((u) => u.id === parseInt(id));
-  useDocumentTitle(`#${id} Show User`); 
-  if (!user)
-    return (
-      <Layout>
-        <LoadingFallback message="User not found" size="small" />
-      </Layout>
-    );
+  }
 
   const userAlbums = albums.filter((album) => album.userId === parseInt(id));
 
@@ -46,7 +43,7 @@ export default function UserDetail() {
   return (
     <Layout>
       {/* Section Header */}
-      <div className="flex flex-col gap-1 mb-6">
+      <div className="flex flex-col gap-1 mb-6 mx-6">
         <div className="flex items-center gap-2">
           <LiaAddressCard className="w-4 h-4" />
           <button
@@ -69,26 +66,26 @@ export default function UserDetail() {
         </div>
       </div>
 
-      <div className="p-5 max-w-[1400px] mx-auto bg-white rounded-lg shadow-sm">
+      <div className="p-5 mx-6 max-w-[1400px] bg-white rounded-lg shadow-sm">
         {/* Section Content */}
         <div className=" mx-auto space-y-6 border border-gray-100 rounded-lg shadow-sm">
           {/* User Information Card */}
           <div className=" rounded-lg shadow-sm">
             <div className="p-6">
-              <div className="flex items-center gap-6 mb-6">
+              <div className="flex items-star gap-4">
                 <img
-                  src={getAvatarUrl(user.name, { size: 80 })}
+                  src={getAvatarUrl(user.name, { size: 32 })}
                   alt={`${user.name}'s avatar`}
-                  className="w-10 h-10 rounded-full"
+                  className="w-8 h-8 rounded-full"
                 />
                 <div>
-                  <h1 className="text-sm font-medium text-gray-800">
+                  <h1 className="font-bold transition-colors cursor-pointer">
                     {user.name}
                   </h1>
-                  <div className="flex items-center gap-2 mt-2 text-gray-600">
+                  <div className="flex items-center gap-2 mt-2">
                     <a
                       href={`mailto:${user.email}`}
-                      className="text-blue-500 hover:text-blue-700"
+                      className="text-blue-500 hover:text-blue-400 transition-colors"
                     >
                       {user.email}
                     </a>
@@ -100,8 +97,8 @@ export default function UserDetail() {
 
           {/* Albums Section */}
           <div className="rounded-lg shadow-sm">
-            <div className="p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Albums</h2>
+            <div className="pb-6 px-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">Albums</h2>
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-gray-50 border-y border-gray-200">
@@ -129,9 +126,7 @@ export default function UserDetail() {
                       <td className="px-4 py-4 border-b">
                         <button
                           onClick={() => navigate(`/albums/${album.id}`)}
-                          className="px-2 py-0.5 text-gray-600 border border-gray-300 rounded-md 
-                                   hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 
-                                   transition-all duration-200 inline-flex items-center gap-2"
+                          className="px-2 py-0.5 text-gray-600 border border-gray-300 rounded-md hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm"
                         >
                           <HiEye className="w-4 h-4" />
                           Show

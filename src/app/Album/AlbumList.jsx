@@ -42,7 +42,6 @@ export default function AlbumList() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setSearchParams({ current: newPage.toString(), pageSize: pageSize.toString() });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -60,23 +59,23 @@ export default function AlbumList() {
 
   return (
     <Layout>
-      <div className=" max-w-[1400px] mx-auto bg-white">
+      <div className=" max-w-[1400px] mx-6 bg-white">
         <table className="w-full border-collapse bg-white">
           <thead>
-            <tr className="bg-gray-50 border-y border-gray-200">
+            <tr className="bg-gray-50 border-b border-gray-200">
               <th className="py-4 px-4 text-left font-semibold  text-black w-[6%]">ID</th>
-              <th className="py-4 px-4 text-left font-semibold  text-black w-[55%]">Title</th>
+              <th className="py-4 px-4 text-left font-semibold  text-black w-[58%]">Title</th>
               <th className="py-4 px-4 text-left font-semibold  text-black w-[22%]">User</th>
-              <th className="py-4 px-4 text-left font-semibold  text-black w-[13%]">Actions</th>
+              <th className="py-4 px-4 text-left font-semibold  text-black w-[15%]">Actions</th>
             </tr>
           </thead>
           <tbody>
             {paginatedAlbums.map(album => (
               <tr key={album.id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="py-4 px-4 border-b">{album.id}</td>
-                <td className="py-4 px-4 border-b font-medium">{album.title}</td>
+                <td className="py-4 px-4 border-b">{album.title}</td>
                 <td className="py-4 px-4 border-b">
-                  <div className="flex items-center gap-3 cursor-pointer" 
+                  <div className="flex items-center gap-4 cursor-pointer" 
                        onClick={() => navigate(`/users/${album.userId}`)}>
                     <img 
                       src={getAvatarUrl(getUserName(album.userId), { size: 32 })}
@@ -91,7 +90,7 @@ export default function AlbumList() {
                 <td className="px-4 py-1 border-b">
                   <button 
                     onClick={() => navigate(`/albums/${album.id}`)}
-                    className="px-2 py-0.5 text-gray-600  border border-gray-300 rounded-md hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm"
+                    className="px-2 py-0.5 border border-gray-300 rounded-md hover:text-blue-400 hover:border-blue-400 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm"
                   >
                     <HiEye className="w-4 h-4" />
                     Show
@@ -103,56 +102,102 @@ export default function AlbumList() {
         </table>
       </div>
       {/* Pagination Section */}
-      <div className="bg-white mt-6 px-6 py-4 flex items-center justify-center gap-4 border-t border-gray-200">
+      <div className="px-6 pt-4 pb-10 flex items-center justify-end gap-4">
         <div className="flex items-center gap-1">
           <button
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
-            className={`px-3 py-1 text-sm rounded-lg border ${
+            className={`px-2 py-1 text-xl font-bold ${
               page === 1 
-                ? 'bg-gray-50 text-gray-400 cursor-not-allowed border-gray-200' 
-                : 'bg-white text-gray-500 hover:bg-gray-50 border-gray-300'
+                ? 'text-gray-300 cursor-not-allowed' 
+                : 'text-gray-500 hover:bg-gray-200 rounded-lg'
             }`}
           >
-            Previous
+            &lsaquo;
           </button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter(num => num === 1 || num === totalPages || Math.abs(num - page) <= 1)
-            .map((num, i, arr) => (
-              <React.Fragment key={num}>
-                {i > 0 && arr[i - 1] !== num - 1 && (
-                  <span className="px-2 py-1 text-gray-400">...</span>
-                )}
-                <button
-                  onClick={() => handlePageChange(num)}
-                  className={`min-w-[32px] px-3 py-1 text-sm rounded-lg border ${
-                    page === num 
-                      ? 'bg-blue-50 text-blue-600 font-medium border-blue-200' 
-                      : 'bg-white text-gray-500 hover:bg-gray-50 border-gray-300'
-                  }`}
-                >
-                  {num}
-                </button>
-              </React.Fragment>
-            ))}
+          {(() => {
+            const pageNumbers = [];
+            const groupSize = 5;
+            const currentGroup = Math.floor((page - 1) / groupSize);
+            const startPage = currentGroup * groupSize + 1;
+            
+            // Always add page 1
+            if (startPage > 1) {
+              pageNumbers.push(1);
+              // Add left ellipsis if not in first group
+              if (startPage > 2) {
+                pageNumbers.push({
+                  type: 'prev-ellipsis',
+                  targetPage: Math.max(1, startPage - groupSize)
+                });
+              }
+            }
+            
+            // Add current group pages
+            for (let i = 0; i < groupSize && (startPage + i) <= totalPages; i++) {
+              pageNumbers.push(startPage + i);
+            }
+            
+            // Add last page if not included
+            if (startPage + groupSize < totalPages) {
+              if (startPage + groupSize < totalPages - 1) {
+                pageNumbers.push({
+                  type: 'next-ellipsis',
+                  targetPage: startPage + groupSize
+                });
+              }
+              pageNumbers.push(totalPages);
+            }
+
+            return pageNumbers.map((item, index) => {
+              if (typeof item === 'number') {
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(item)}
+                    className={`min-w-[32px] px-3 py-1 text-sm rounded-lg ${
+                      page === item 
+                        ? 'bg-white text-blue-600 font-medium border border-blue-600' 
+                        : 'text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    {item}
+                  </button>
+                );
+              } else {
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(item.targetPage)}
+                    className="px-2 py-1 text-gray-400 hover:text-blue-600 group min-w-[32px] flex items-center justify-center text-lg"
+                  >
+                    <span className="group-hover:hidden text-2xl leading-none relative top-[-8px]">...</span>
+                    <span className="hidden group-hover:inline text-xl font-medium">
+                      {item.type === 'prev-ellipsis' ? '«' : '»'}
+                    </span>
+                  </button>
+                );
+              }
+            });
+          })()}
 
           <button
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
-            className={`px-3 py-1 text-sm rounded-lg border ${
+            className={`px-2 py-1 text-xl font-bold ${
               page === totalPages 
-                ? 'bg-gray-50 text-gray-400 cursor-not-allowed border-gray-200' 
-                : 'bg-white text-gray-500 hover:bg-gray-50 border-gray-300'
+                ? 'text-gray-300 cursor-not-allowed' 
+                : 'text-gray-500 hover:bg-gray-200 rounded-lg'
             }`}
           >
-            Next
+            &rsaquo;
           </button>
 
           <select
             value={pageSize}
             onChange={(e) => handlePageSizeChange(e.target.value)}
-            className="ml-2 border border-gray-300 rounded-lg px-2 py-1 text-sm text-gray-600"
+            className="ml-2 border border-gray-300 rounded-lg px-2 py-1.5 text-sm text-gray-600"
           >
             <option value="10">10 / page</option>
             <option value="20">20 / page</option>

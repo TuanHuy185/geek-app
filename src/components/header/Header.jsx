@@ -4,7 +4,7 @@ import geekuplogo from "../../assets/geekup-logo.png";
 
 const Header = () => {
   return (
-    <header className="w-full bg-white shadow-sm py-5 px-6">
+    <header className="w-full bg-white shadow-sm py-5 px-4">
       <div className="max-w-7xl">
         <div className="flex items-center">
           <Link to="/albums">

@@ -52,7 +52,7 @@ function Layout({ children }) {
         <div
           className={`
           flex-1 transition-all duration-300 pt-24
-          ${!isCollapsed ? 'lg:pl-[220px]' : 'lg:pl-[90px]'}
+          ${!isCollapsed ? 'lg:pl-[200px]' : 'lg:pl-[90px]'}
         `}
         >
           {isLoading ? (
