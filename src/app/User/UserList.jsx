@@ -26,15 +26,15 @@ export default function UserList() {
 
   return (
     <Layout>
-      <div className="p-5 max-w-[1280px] mx-auto">
+      <div className="p-5 max-w-[1280px] mx-auto bg-white">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 hover:text-gray-900 transition-colors">Users</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Users</h1>
         </div>
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse bg-white">
           <thead>
-            <tr className="bg-gray-50">
-              <th className="py-3 px-4 text-left border-b font-semibold">ID</th>
-              <th className="py-3 px-4 text-left border-b font-semibold">Avatar</th>
+            <tr>
+              <th className="py-3 px-4 text-left border-b bg-white font-semibold">ID</th>
+              <th className="py-3 px-4 text-left border-b bg-white font-semibold">Avatar</th>
               <th className="py-3 px-4 text-left border-b font-semibold">Name</th>
               <th className="py-3 px-4 text-left border-b font-semibold">Email</th>
               <th className="py-3 px-4 text-left border-b font-semibold">Phone</th>

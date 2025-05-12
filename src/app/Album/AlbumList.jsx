@@ -56,14 +56,14 @@ export default function AlbumList() {
 
   return (
     <Layout>
-      <div className="p-5 max-w-[1400px] mx-auto">
-        <table className="w-full border-collapse">
+      <div className="p-5 max-w-[1400px] mx-auto bg-white">
+        <table className="w-full border-collapse bg-white">
           <thead>
             <tr>
-              <th className="py-3 px-4 text-left border-b bg-gray-50">ID</th>
-              <th className="py-3 px-4 text-left border-b bg-gray-50">Title</th>
-              <th className="py-3 px-4 text-left border-b bg-gray-50">User</th>
-              <th className="py-3 px-4 text-left border-b bg-gray-50">Actions</th>
+              <th className="py-3 px-4 text-left border-b bg-white font-semibold">ID</th>
+              <th className="py-3 px-4 text-left border-b bg-white font-semibold">Title</th>
+              <th className="py-3 px-4 text-left border-b bg-white font-semibold">User</th>
+              <th className="py-3 px-4 text-left border-b bg-white font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
