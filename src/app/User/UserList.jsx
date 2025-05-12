@@ -1,20 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import Layout from '../../components/layout/Layout'
 import { useDocumentTitle } from '../../App'
 import { HiEye } from 'react-icons/hi'
+import { fetchUsers, getAvatarUrl } from '../../store/UserSlice'
+import LoadingFallback from '../../components/LoadingFallback'
 
 export default function UserList() {
   useDocumentTitle('Users');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { users, loading, error } = useSelector(state => state.users);
 
-  const users = [
-    { id: 1, name: 'Leanne Graham', email: 'Sincere@april.biz', phone: '1-770-736-8031 x56442', website: 'hildegard.org', initials: 'LG' },
-    { id: 2, name: 'Ervin Howell', email: 'Shanna@melissa.tv', phone: '010-692-6593 x09125', website: 'anastasia.net', initials: 'EH' },
-    { id: 3, name: 'Clementine Bauch', email: 'Nathan@yesenia.net', phone: '1-463-123-4447', website: 'ramiro.info', initials: 'CB' },
-  ];
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
+  const getInitials = (name) => {
+    return name.split(' ').map(n => n[0]).join('');
+  };
+
+  if (loading) return <Layout><LoadingFallback message="Loading users..." /></Layout>;
+  if (error) return <Layout><LoadingFallback message={`Error: ${error}`} size="small" /></Layout>;
 
   return (
     <Layout>
-      <div className="p-5">
+      <div className="p-5 max-w-[1280px] mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800 hover:text-gray-900 transition-colors">Users</h1>
         </div>
@@ -35,9 +47,11 @@ export default function UserList() {
               <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="py-3 px-4 border-b font-medium">{user.id}</td>
                 <td className="py-3 px-4 border-b">
-                  <div className="w-8 h-8 rounded-full bg-pink-500 text-white flex items-center justify-center text-sm transform hover:scale-110 transition-transform duration-200 shadow-sm cursor-pointer">
-                    {user.initials}
-                  </div>
+                  <img 
+                    src={getAvatarUrl(user.name, { size: 32 })}
+                    alt={`${user.name}'s avatar`}
+                    className="w-8 h-8 rounded-full transform hover:scale-110 transition-transform duration-200 shadow-sm"
+                  />
                 </td>
                 <td className="py-3 px-4 border-b font-medium">
                   {user.name}
@@ -57,9 +71,11 @@ export default function UserList() {
                   </a>
                 </td>
                 <td className="py-3 px-4 border-b">
-                  <button className="px-4 py-1.5 text-gray-600 font-medium border border-gray-300 rounded-md 
-                                   hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 
-                                   transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
+                  <button 
+                    onClick={() => navigate(`/users/${user.id}`)}
+                    className="px-4 py-1.5 text-gray-600 font-medium border border-gray-300 rounded-md 
+                             hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 
+                             transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
                     <HiEye className="w-4 h-4" />
                     Show
                   </button>
