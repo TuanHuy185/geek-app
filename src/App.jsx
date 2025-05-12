@@ -10,11 +10,10 @@ import React, { Suspense } from "react";
 import LoadingFallback from "./components/LoadingFallback";
 import UserList from "./app/user/UserList";
 import UserDetail from "./app/user/UserDetail";
-import AlbumList from "./app/Album/AlbumList";
-import AlbumDetail from "./app/Album/AlbumDetail";
+import AlbumList from "./app/album/AlbumList";
+import AlbumDetail from "./app/album/AlbumDetail";
 import { AppProvider } from './context/AppContext';
 
-// Add custom hook for managing document title
 export const useDocumentTitle = (title) => {
   React.useEffect(() => {
     document.title = `${title} | Refine`;

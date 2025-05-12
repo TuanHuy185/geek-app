@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import { AppProvider } from './context/AppContext';
 
-// Wait for i18n to be initialized
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

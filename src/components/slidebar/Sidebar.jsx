@@ -40,7 +40,6 @@ const Sidebar = ({ isCollapsed, onCollapse }) => {
     setHighlightedMainItem(index);
     setHighlightedSubItem(itemLink);
     
-    // Add query parameters for albums route
     if (itemLink === '/albums') {
       navigate('/albums?pageSize=20&current=1');
     } else {

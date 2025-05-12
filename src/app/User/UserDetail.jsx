@@ -29,8 +29,7 @@ export default function UserDetail() {
     );
 
   const user = users.find((u) => u.id === parseInt(id));
-  useDocumentTitle(`#${id} Show User`); // Move this after we have the user ID
-
+  useDocumentTitle(`#${id} Show User`); 
   if (!user)
     return (
       <Layout>
@@ -41,7 +40,7 @@ export default function UserDetail() {
   const userAlbums = albums.filter((album) => album.userId === parseInt(id));
 
   const handleBack = () => {
-    navigate(-1); // Navigate to previous page in history
+    navigate(-1);
   };
 
   return (

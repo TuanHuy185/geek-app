@@ -7,7 +7,7 @@ const LoadingFallback = ({ message, size = 'medium' }) => {
         return 'h-8 w-8 border-2';
       case 'large':
         return 'h-16 w-16 border-4';
-      default: // medium
+      default: 
         return 'h-12 w-12 border-2';
     }
   };

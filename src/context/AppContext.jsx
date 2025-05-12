@@ -15,7 +15,7 @@ export function AppProvider({ children }) {
     loadingTimeoutRef.current = setTimeout(() => {
       setIsLoading(true);
       setLoadingMessage(message);
-    }, 750); // Increased delay to 750ms
+    }, 1000); 
   };
 
   const stopLoading = () => {

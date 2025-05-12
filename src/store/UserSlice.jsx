@@ -23,12 +23,12 @@ export const fetchTodos = createAsyncThunk("users/fetchTodos", async () => {
 export const getAvatarUrl = (name, options = {}) => {
   const defaultOptions = {
     name: encodeURIComponent(name),
-    background: 'random',  // random background color
-    size: 128,            // larger size
-    rounded: true,        // circular avatar
-    bold: true,          // bold text
-    format: 'png',        // PNG format
-    uppercase: true      // uppercase initials
+    background: 'random',  
+    size: 128,            
+    rounded: true,       
+    bold: true,     
+    format: 'png',      
+    uppercase: true    
   };
 
   const params = { ...defaultOptions, ...options };

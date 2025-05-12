@@ -4,7 +4,6 @@ export const fetchAlbums = createAsyncThunk(
   "albums/fetchAlbums",
   async (_, { getState }) => {
     const { albums } = getState().albums;
-    // Return cached data if available
     if (albums.length > 0) return albums;
 
     const response = await fetch(

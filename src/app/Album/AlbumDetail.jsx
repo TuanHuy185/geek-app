@@ -29,7 +29,7 @@ export default function AlbumDetail() {
   useDocumentTitle(`#${albumId} Show Album`);
 
   const handleBack = () => {
-    navigate(-1); // Navigate to previous page in history
+    navigate(-1); 
   };
 
   if (loading)
