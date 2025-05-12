@@ -7,16 +7,31 @@ import LoadingFallback from "../LoadingFallback";
 
 function Layout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
-  const { isLoading, loadingMessage } = useAppContext();
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebarCollapsed');
+    return saved === 'true' || window.innerWidth < 768;
+  });
+  
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', isCollapsed);
+  }, [isCollapsed]);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsCollapsed(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setIsCollapsed(true);
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleCollapse = (collapsed) => {
+    setIsCollapsed(collapsed);
+    localStorage.setItem('sidebarCollapsed', collapsed);
+  };
+
+  const { isLoading, loadingMessage } = useAppContext();
 
   return (
     <div className="flex flex-col min-h-screen bg-zinc-100">
@@ -39,7 +54,7 @@ function Layout({ children }) {
           }
         `}
         >
-          <Sidebar isCollapsed={isCollapsed} onCollapse={setIsCollapsed} />
+          <Sidebar isCollapsed={isCollapsed} onCollapse={handleCollapse} />
         </div>
         {/* Overlay for mobile */}
         {isSidebarOpen && (
@@ -52,7 +67,7 @@ function Layout({ children }) {
         <div
           className={`
           flex-1 transition-all duration-300 pt-24
-          ${!isCollapsed ? 'lg:pl-[200px]' : 'lg:pl-[90px]'}
+          ${isCollapsed ? 'lg:pl-[80px]' : 'lg:pl-[200px]'}
         `}
         >
           {isLoading ? (

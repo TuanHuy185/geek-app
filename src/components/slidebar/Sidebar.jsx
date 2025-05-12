@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SidebarItem from "./SidebarItem";
 import { TiDocumentText } from "react-icons/ti";
@@ -37,14 +37,21 @@ const Sidebar = ({ isCollapsed, onCollapse }) => {
 
   const handleItemClick = (index, itemLink) => {
     if (!itemLink) return;
+    
+    // Just update highlights and navigate, don't change collapse state
     setHighlightedMainItem(index);
     setHighlightedSubItem(itemLink);
     
+    // Navigate without affecting sidebar collapse state
     if (itemLink === '/albums') {
-      navigate('/albums?pageSize=20&current=1');
+      navigate('/albums?pageSize=20&current=1', { replace: true });
     } else {
-      navigate(itemLink);
+      navigate(itemLink, { replace: true });
     }
+  };
+
+  const handleCollapseToggle = () => {
+    onCollapse(!isCollapsed);
   };
 
   return (
@@ -67,7 +74,7 @@ const Sidebar = ({ isCollapsed, onCollapse }) => {
         </nav>
 
         <button
-          onClick={() => onCollapse(!isCollapsed)}
+          onClick={handleCollapseToggle}
           className="mb-2 mx-auto p-2 hover:bg-blue-50 rounded-full text-blue-400 hover:text-blue-700 transition-colors"
         >
           {isCollapsed ? (

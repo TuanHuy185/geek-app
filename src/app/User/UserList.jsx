@@ -28,7 +28,7 @@ export default function UserList() {
 
   return (
     <Layout>
-      <div className="max-w-[1280px] mx-auto mb-5">
+      <div className="max-w-[1400px] mx-6 mb-5">
         <div className="mb-6">
           <h1 className="text-xl font-medium text-gray-800">Users</h1>
         </div>
