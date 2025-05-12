@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import SidebarItem from "./SidebarItem";
 import { TiDocumentText } from "react-icons/ti";
 import { LiaAddressCard } from "react-icons/lia";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 const Sidebar = () => {
   const { t } = useTranslation();
@@ -59,19 +60,9 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={`h-full ${isCollapsed ? "w-[90px]" : "w-[220px]"} bg-white`}>
-      <div className={`
-        flex flex-col grow items-center 
-        px-1 pt-3.5 
-        text-sm leading-snug text-black 
-        bg-white border-r border-gray-200
-        h-full
-      `}>
-        <nav
-          className={`flex flex-col self-stretch w-full ${
-            isLoading ? "pointer-events-none opacity-50" : ""
-          }`}
-        >
+    <aside className={`h-full ${isCollapsed ? "w-[60px]" : "w-[220px]"} bg-white transition-all duration-300`}>
+      <div className="flex flex-col h-full bg-white border-r border-gray-200">
+        <nav className={`flex flex-col flex-1 py-4 ${isLoading ? "pointer-events-none opacity-50" : ""}`}>
           {items.map((item, index) => (
             <SidebarItem
               key={index}
@@ -81,11 +72,22 @@ const Sidebar = () => {
               link={item.link}
               onClick={() => handleItemClick(index, item.link)}
               showText={!isCollapsed}
-              subItems={item.subItems}
+              isCollapsed={isCollapsed}
               currentPath={highlightedSubItem}
             />
           ))}
         </nav>
+
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="mb-4 mx-auto p-2 hover:bg-blue-50 rounded-full text-blue-600 hover:text-blue-700 transition-colors"
+        >
+          {isCollapsed ? (
+            <HiChevronRight className="w-5 h-5" />
+          ) : (
+            <HiChevronLeft className="w-5 h-5" />
+          )}
+        </button>
       </div>
     </aside>
   );
