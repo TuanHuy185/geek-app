@@ -8,10 +8,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { Suspense } from "react";
 import LoadingFallback from "./components/LoadingFallback";
-import UserList from "./app/User/UserList";
-import UserDetail from "./app/User/UserDetail";
-import AlbumList from "./app/Album/AlbumList";
-import AlbumDetail from "./app/Album/AlbumDetail";
+import UserList from "./app/user/UserList";
+import UserDetail from "./app/user/UserDetail";
+import AlbumList from "./app/album/AlbumList";
+import AlbumDetail from "./app/album/AlbumDetail";
+
+// Add custom hook for managing document title
+export const useDocumentTitle = (title) => {
+  React.useEffect(() => {
+    document.title = `${title} | Refine`;
+  }, [title]);
+};
 
 export default function App() {
   return (
