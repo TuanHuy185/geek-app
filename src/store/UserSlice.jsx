@@ -14,6 +14,25 @@ export const fetchTodos = createAsyncThunk("users/fetchTodos", async () => {
   return response.json();
 });
 
+export const getAvatarUrl = (name, options = {}) => {
+  const defaultOptions = {
+    name: encodeURIComponent(name),
+    background: 'random',  // random background color
+    size: 128,            // larger size
+    rounded: true,        // circular avatar
+    bold: true,          // bold text
+    format: 'png',        // PNG format
+    uppercase: true      // uppercase initials
+  };
+
+  const params = { ...defaultOptions, ...options };
+  const queryString = Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+
+  return `https://ui-avatars.com/api/?${queryString}`;
+};
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
