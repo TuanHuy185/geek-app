@@ -15,10 +15,10 @@ const LoadingFallback = ({ message, size = 'medium' }) => {
   const sizeClasses = getSizeClasses();
   
   return (
-    <div className="flex flex-col items-center justify-center py-12">
-      <div className={`animate-spin rounded-full ${sizeClasses} border-t-themecolor1 border-b-themecolor3 border-l-transparent border-r-transparent`}></div>
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white bg-opacity-80 z-50">
+      <div className={`animate-spin rounded-full ${sizeClasses} border-t-blue-600 border-r-transparent border-b-blue-600 border-l-transparent`}></div>
       {message && (
-        <p className="mt-4 text-gray-500 dark:text-gray-400 text-center">{message}</p>
+        <p className="mt-4 text-gray-600 text-center font-medium">{message}</p>
       )}
     </div>
   );
