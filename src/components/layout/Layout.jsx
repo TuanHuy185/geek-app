@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../header/Header";
 import Sidebar from "../slidebar/Sidebar";
 import { Menu, X } from "lucide-react";
@@ -7,22 +7,29 @@ import LoadingFallback from "../LoadingFallback";
 
 function Layout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
   const { isLoading, loadingMessage } = useAppContext();
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsCollapsed(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className="flex flex-col min-h-screen bg-red-50">
+    <div className="flex flex-col min-h-screen bg-zinc-100">
       {/* Header */}
-      <div className="w-full border-b border-gray-200 fixed top-0 left-0 right-0 bg-white z-20">
+      <div className="w-full h-16 border-b border-gray-200 fixed top-0 left-0 right-0 bg-white z-20">
         <Header />
       </div>
 
-      <div className="flex flex-1 pt-16">
-        {" "}
-        {/* Add top padding to account for fixed header */}
-        {/* Sidebar with dynamic width transition */}
+      <div className="flex flex-1">
+        {/* Sidebar - Adjusted top position to match header height */}
         <div
           className={`
-          fixed top-16 left-0 bottom-0
+          fixed top-[64px] left-0 bottom-0
           transform transition-all duration-300 ease-in-out
           z-10
           ${
@@ -32,7 +39,7 @@ function Layout({ children }) {
           }
         `}
         >
-          <Sidebar />
+          <Sidebar isCollapsed={isCollapsed} onCollapse={setIsCollapsed} />
         </div>
         {/* Overlay for mobile */}
         {isSidebarOpen && (
@@ -42,13 +49,18 @@ function Layout({ children }) {
           />
         )}
         {/* Main Content with dynamic margin */}
-        <div className="flex-1 pl-0 lg:pl-64 p-4 md:p-6 transition-all duration-300">
+        <div
+          className={`
+          flex-1 transition-all duration-300 pt-24
+          ${!isCollapsed ? 'lg:pl-[220px]' : 'lg:pl-[90px]'}
+        `}
+        >
           {isLoading ? (
             <main className="flex-grow flex items-center justify-center">
               <LoadingFallback message={loadingMessage} />
             </main>
           ) : (
-            <main className="p-6 md:p-8">{children}</main>
+            <main>{children}</main>
           )}
         </div>
       </div>

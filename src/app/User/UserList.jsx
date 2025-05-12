@@ -26,56 +26,56 @@ export default function UserList() {
 
   return (
     <Layout>
-      <div className="p-5 max-w-[1280px] mx-auto bg-white">
+      <div className="max-w-[1280px] mx-auto mb-5">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Users</h1>
+          <h1 className="text-xl font-medium text-gray-800">Users</h1>
         </div>
         <table className="w-full border-collapse bg-white">
           <thead>
-            <tr>
-              <th className="py-3 px-4 text-left border-b bg-white font-semibold">ID</th>
-              <th className="py-3 px-4 text-left border-b bg-white font-semibold">Avatar</th>
-              <th className="py-3 px-4 text-left border-b font-semibold">Name</th>
-              <th className="py-3 px-4 text-left border-b font-semibold">Email</th>
-              <th className="py-3 px-4 text-left border-b font-semibold">Phone</th>
-              <th className="py-3 px-4 text-left border-b font-semibold">Website</th>
-              <th className="py-3 px-4 text-left border-b font-semibold">Actions</th>
+            <tr className="bg-gray-50 border-y border-gray-200">
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">ID</th>
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">Avatar</th>
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">Name</th>
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">Email</th>
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">Phone</th>
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">Website</th>
+              <th className="py-4 px-4 text-left font-semibold text-gray-600 text-[15px]">Actions</th>
             </tr>
           </thead>
           <tbody>
             {users.map(user => (
               <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-150">
-                <td className="py-3 px-4 border-b font-medium">{user.id}</td>
-                <td className="py-3 px-4 border-b">
+                <td className="py-4 px-4 border-b font-medium">{user.id}</td>
+                <td className="py-4 px-4 border-b">
                   <img 
                     src={getAvatarUrl(user.name, { size: 32 })}
                     alt={`${user.name}'s avatar`}
                     className="w-8 h-8 rounded-full transform hover:scale-110 transition-transform duration-200 shadow-sm"
                   />
                 </td>
-                <td className="py-3 px-4 border-b font-medium">
+                <td className="py-4 px-4 border-b text-gray-900">
                   {user.name}
                 </td>
-                <td className="py-3 px-4 border-b">
-                  <a href={`mailto:${user.email}`} className="text-blue-500 hover:text-blue-700 transition-colors duration-150">
+                <td className="py-4 px-4 border-b">
+                  <a href={`mailto:${user.email}`} className="text-blue-600 hover:text-blue-400 transition-colors duration-150">
                     {user.email}
                   </a>
                 </td>
-                <td className="py-3 px-4 border-b hover:text-gray-900 transition-colors duration-150">
-                  {user.phone}
+                <td className="py-4 px-4 border-b">
+                  <a href={`tel:${user.phone}`} className="text-blue-600 hover:text-blue-400 transition-colors duration-150">
+                    {user.phone}
+                  </a>
                 </td>
-                <td className="py-3 px-4 border-b">
+                <td className="py-4 px-4 border-b">
                   <a href={`https://${user.website}`} target="_blank" rel="noopener noreferrer" 
-                     className="text-blue-500 hover:text-blue-700 transition-colors duration-150">
+                     className="text-blue-600 hover:text-blue-400 transition-colors duration-150">
                     {user.website}
                   </a>
                 </td>
-                <td className="py-3 px-4 border-b">
+                <td className="py-4 px-4 border-b">
                   <button 
                     onClick={() => navigate(`/users/${user.id}`)}
-                    className="px-4 py-1.5 text-gray-600 font-medium border border-gray-300 rounded-md 
-                             hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 
-                             transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
+                    className="px-2 py-0.5 text-gray-600  border border-gray-300 rounded-md hover:text-blue-600 hover:border-blue-600 hover:bg-blue-50 transition-all duration-200 inline-flex items-center gap-2 hover:shadow-sm">
                     <HiEye className="w-4 h-4" />
                     Show
                   </button>
