@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import SidebarItem from "./SidebarItem";
-import { MdNewspaper } from "react-icons/md";
-import { BsPersonVcard } from "react-icons/bs";
+import { TiDocumentText } from "react-icons/ti";
+import { LiaAddressCard } from "react-icons/lia";
 
 const Sidebar = () => {
   const { t } = useTranslation();
@@ -16,12 +16,12 @@ const Sidebar = () => {
 
   const items = [
     {
-      icon: MdNewspaper,
+      icon: TiDocumentText,
       text: "Albums",
       link: "/albums",
     },
     {
-      icon: BsPersonVcard,
+      icon: LiaAddressCard ,
       text: "Users",
       link: "/users",
     },
