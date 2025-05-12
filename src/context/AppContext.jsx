@@ -1,42 +1,36 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useRef } from 'react';
 
 const AppContext = createContext();
 
-export const AppProvider = ({ children }) => {
+export function AppProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState('');
-  const [skipLoading, setSkipLoading] = useState(false);
+  const loadingTimeoutRef = useRef(null);
 
   const startLoading = (message = '') => {
-    if (!skipLoading) {
-      setLoadingMessage(message);
-      setIsLoading(true);
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
     }
+
+    loadingTimeoutRef.current = setTimeout(() => {
+      setIsLoading(true);
+      setLoadingMessage(message);
+    }, 750); // Increased delay to 750ms
   };
 
   const stopLoading = () => {
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+    }
     setIsLoading(false);
     setLoadingMessage('');
   };
 
-  const toggleSkipLoading = (value) => {
-    setSkipLoading(value !== undefined ? value : !skipLoading);
-  };
-
   return (
-    <AppContext.Provider value={{
-      isLoading,
-      loadingMessage,
-      startLoading,
-      stopLoading,
-      skipLoading,
-      toggleSkipLoading
-    }}>
+    <AppContext.Provider value={{ isLoading, loadingMessage, startLoading, stopLoading }}>
       {children}
     </AppContext.Provider>
   );
-};
+}
 
-export const useAppContext = () => {
-  return useContext(AppContext);
-};
+export const useAppContext = () => useContext(AppContext);

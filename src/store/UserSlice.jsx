@@ -1,11 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
-  const response = await fetch(
-    `${import.meta.env.VITE_REACT_APP_API_URL}${import.meta.env.VITE_USERS_API}`
-  );
-  return response.json();
-});
+export const fetchUsers = createAsyncThunk(
+  "users/fetchUsers", 
+  async (_, { getState }) => {
+    const { users } = getState().users;
+    if (users.length > 0) return users;
+
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}${import.meta.env.VITE_USERS_API}`
+    );
+    return response.json();
+  }
+);
 
 export const fetchTodos = createAsyncThunk("users/fetchTodos", async () => {
   const response = await fetch(

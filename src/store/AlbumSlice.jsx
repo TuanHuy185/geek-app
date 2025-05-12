@@ -1,18 +1,31 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchAlbums = createAsyncThunk("albums/fetchAlbums", async () => {
-  const response = await fetch(
-    `${import.meta.env.VITE_REACT_APP_API_URL}${import.meta.env.VITE_ALBUMS_API}`
-  );
-  return response.json();
-});
+export const fetchAlbums = createAsyncThunk(
+  "albums/fetchAlbums",
+  async (_, { getState }) => {
+    const { albums } = getState().albums;
+    // Return cached data if available
+    if (albums.length > 0) return albums;
 
-export const fetchPhotos = createAsyncThunk("albums/fetchPhotos", async () => {
-  const response = await fetch(
-    `${import.meta.env.VITE_REACT_APP_API_URL}${import.meta.env.VITE_PHOTOS_API}`
-  );
-  return response.json();
-});
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}${import.meta.env.VITE_ALBUMS_API}`
+    );
+    return response.json();
+  }
+);
+
+export const fetchPhotos = createAsyncThunk(
+  "albums/fetchPhotos",
+  async (_, { getState }) => {
+    const { photos } = getState().albums;
+    if (photos.length > 0) return photos;
+
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}${import.meta.env.VITE_PHOTOS_API}`
+    );
+    return response.json();
+  }
+);
 
 const albumSlice = createSlice({
   name: "albums",
