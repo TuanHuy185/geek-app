@@ -1,3 +1,5 @@
+https://github.com/TuanHuy185/geek-app.git
+https://geek-app.vercel.app/
 # Geek App
 
 A modern React application for viewing users, albums, and photos, built with Vite and Redux.

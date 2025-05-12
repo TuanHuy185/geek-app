@@ -1,0 +1,50 @@
+https://github.com/TuanHuy185/geek-app.git
+https://geek-app.vercel.app/
+
+Technical Stack and Approach
+
+1. Frontend Framework
+- React 18: Using modern React features including Hooks, Context API, and Suspense
+- Vite: For fast development experience and optimized build process
+
+2. State Management
+- Redux Toolkit: For centralized application state
+- Redux Persist: For persisting state across browser sessions
+- Context API: For component-level state management (loading states)
+
+3. Styling
+- Tailwind CSS: For utility-first styling approach
+- CSS Modules: For component-scoped styling
+- Custom animations: For UI transitions
+
+4. UI Components and Design
+- React Icons & Lucide React: For comprehensive icon library
+- Responsive layout: Mobile-first approach with adaptive components
+- Image viewer: Custom component with zoom, rotate, and flip functionality
+
+5. Routing and Navigation
+- React Router DOM (HashRouter): For client-side routing without server configuration
+- Structured routes: For users and albums features
+- Semantic navigation: With breadcrumbs and back buttons
+
+6. Data Handling
+- Redux Thunks: For asynchronous data fetching
+- Optimized loading: With conditional data fetching to prevent redundant API calls
+- Data caching: Using Redux store for previously fetched data
+
+7. Error Handling
+- Error Boundaries: For graceful UI error recovery
+- Loading states: With fallback components
+- Toast notifications: Using React Toastify
+
+8. Development Tooling
+- ESLint: For code quality and consistency
+- Environment variables: For configuration management
+- Structured project organization: Feature-based component folders
+
+Architecture Decisions:
+1. HashRouter Implementation: Used to avoid server configuration for SPA routing
+2. Image Gallery: Custom implementation of photo viewer with advanced features
+3. Pagination: Client-side pagination for album lists
+4. Error Recovery: Component-level error boundaries to prevent app crashes
+5. Responsive Sidebar: Collapsible sidebar that adapts to screen sizes
