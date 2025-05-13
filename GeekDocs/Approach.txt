@@ -35,7 +35,6 @@ Technical Stack and Approach
 7. Error Handling
 - Error Boundaries: For graceful UI error recovery
 - Loading states: With fallback components
-- Toast notifications: Using React Toastify
 
 8. Development Tooling
 - ESLint: For code quality and consistency

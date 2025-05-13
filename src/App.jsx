@@ -4,8 +4,6 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import React, { Suspense } from "react";
 import LoadingFallback from "./components/LoadingFallback";
 import UserList from "./app/User/UserList";
@@ -49,12 +47,6 @@ export default function App() {
               />
             </Routes>
           </Suspense>
-          <ToastContainer
-            position="top-right"
-            autoClose={1000}
-            theme="colored"
-            className="toast-container"
-          />
         </ErrorBoundary>
       </Router>
     </AppProvider>
